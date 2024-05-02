@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .game-container {
+            text-align: center;
+        }
+        input, button {
+            margin-top: 30px;
+            padding: 28px;
+            font-size: 25px;
+        }
+        button {
+            cursor: pointer;
+        }
+        h1 {
+            font-style: serif;
+            font: weight 100px;;
+            font-size: 60px;
+        }
+        .styled-number {
+            color: rgb(7, 7, 7);
+            font-style: italic;
+        }
+         
+        
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Number Game</h1>
+        <div id="setup">
+            <label>Number of rounds: <input type="number" id="numRounds" min="1" max="5" value="1"></label>
+            <button onclick="startGame()">Start Game</button>
+        </div>
+        <div id="game" style="display:none;">
+            <p>Guess the number between <span class="styled-number">1</span> and 100.</p>
+            <label>Guess: <input type="number" id="guessInput" placeholder="Enter your guess"></label>
+            <button onclick="submitGuess()">Submit Guess</button>
+            <p id="feedback"></p>
+            <button id="nextRound" onclick="nextRound()" style="display:none;">Next Round</button>
+        </div>
+    </div>
+    <script>
+        let currentRound = 0;
+        let totalRounds = 0;
+        let secretNumber = 0;
+        let attempts = 0;
+        let maxAttempts = 5; 
+        let isHardMode = true;
+
+        function startGame() {
+            totalRounds = parseInt(document.getElementById('numRounds').value) || 1;
+            currentRound = 0;
+            nextRound();
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('game').style.display = '';
+        }
+
+        function nextRound() {
+            currentRound++;
+            if (currentRound > totalRounds) {
+                alert('Game Over! Thanks for playing.');
+                document.getElementById('game').style.display = 'none';
+                document.getElementById('setup').style.display = '';
+                return;
+            }
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            document.getElementById('feedback').textContent = `Round ${currentRound} of ${totalRounds}.`;
+            document.getElementById('nextRound').style.display = 'none';
+            document.getElementById('guessInput').value = '';
+        }
+
+        function submitGuess() {
+            const guess = parseInt(document.getElementById('guessInput').value);
+            if (isNaN(guess)) {
+                alert('Please enter a valid number.');
+                return;
+            }
+            attempts++;
+            if (guess === secretNumber) {
+                document.getElementById('feedback').textContent = `Correct! It took you ${attempts} attempts.`;
+                document.getElementById('nextRound').style.display = '';
+            } else if (guess < secretNumber) {
+                document.getElementById('feedback').textContent = 'Too low!';
+            } else {
+                document.getElementById('feedback').textContent = 'Too high!';
+            }
+
+            if (isHardMode && attempts >= maxAttempts) {
+                document.getElementById('feedback').textContent += ` Game over! The number was ${secretNumber}.`;
+                document.getElementById('nextRound').style.display = '';
+            }
+        }
+    </script>
+</body>
+</html>
